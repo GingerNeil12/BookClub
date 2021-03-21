@@ -2,7 +2,7 @@
 
 namespace BookClub.Catalog.Models
 {
-    public class Publisher
+    public class Publisher : AuditableEntity
     {
         private ICollection<Book> _books;
 

@@ -85,6 +85,42 @@ namespace BookClub.Catalog.Models
             }
         }
 
+        public void ChangePublisher
+        (
+            IPublisherStrategy publisherStrategy,
+            Publisher newPublisher
+        )
+        {
+            if (publisherStrategy.CanChangePublisher(_publisher, newPublisher))
+            {
+                _publisher = newPublisher;
+                _publisherId = newPublisher.Id;
+            }
+        }
+
+        public void AddAuthor
+        (
+            IBookAuthorStrategy bookAuthorStrategy,
+            Author newAuthor
+        )
+        {
+            if (bookAuthorStrategy.CanAddAuthor(_bookAuthors, newAuthor))
+            {
+                _bookAuthors.Add(new BookAuthor(newAuthor, this));
+            }
+        }
+
+        public void RemoveAuthor(IBookAuthorStrategy bookAuthorStrategy, int id)
+        {
+            if (bookAuthorStrategy.CanRemoveAuthor(_bookAuthors, id))
+            {
+                var author = FilterAuthorsBy(x => x.AuthorId == id)
+                    .First();
+
+                _bookAuthors.Remove(author);
+            }
+        }
+
         public void AddTag
         (
             ITagStrategy tagStrategy,
