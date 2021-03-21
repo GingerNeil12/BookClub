@@ -2,7 +2,7 @@
 
 namespace BookClub.Catalog.Models
 {
-    abstract class AuditableEntity
+    public abstract class AuditableEntity
     {
         public string CreatedBy { get; set; }
         public DateTime CreatedOn { get; set; }

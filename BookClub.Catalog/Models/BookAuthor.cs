@@ -2,12 +2,17 @@
 {
     public class BookAuthor
     {
-        public int AuthorId { get; set; }
-        public int BookId { get; set; }
-        public AuthorType AuthorType { get; set; }
+        private int _authorId;
+        private int _bookId;
 
-        public virtual Author Author { get; set; }
-        public virtual Book Book { get; set; }
+        private Author _author;
+        private Book _book;
+
+        public int AuthorId { get { return _authorId; } }
+        public int BookId { get { return _bookId; } }
+
+        public virtual Author Author { get { return _author; } }
+        public virtual Book Book { get { return _book; } }
 
         public BookAuthor()
         {
@@ -17,21 +22,13 @@
         public BookAuthor
         (
             Author author,
-            Book book,
-            AuthorType authorType
+            Book book
         )
         {
-            Author = author;
-            Book = book;
-            AuthorId = author.Id;
-            BookId = book.Id;
-            AuthorType = authorType;
+            _author = author;
+            _book = book;
+            _authorId = author.Id;
+            _bookId = book.Id;
         }
-    }
-
-    public enum AuthorType
-    {
-        Author,
-        CoAuthor
     }
 }

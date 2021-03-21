@@ -5,10 +5,10 @@ using BookClub.Catalog.Strategies;
 
 namespace BookClub.Catalog.Models
 {
-    public class Book
+    public class Book : AuditableEntity
     {
         private Genre _genre;
-        private List<BookAuthor> _authors;
+        private List<BookAuthor> _bookAuthors;
         private List<Tag> _tags;
 
         private int _genreId;
@@ -26,7 +26,7 @@ namespace BookClub.Catalog.Models
         public DateTime? PublishedOn { get; set; }
 
         public virtual Genre Genre { get { return _genre; } }
-        public virtual IEnumerable<BookAuthor> Authors { get { return _authors; } }
+        public virtual IEnumerable<BookAuthor> BookAuthors { get { return _bookAuthors; } }
         public virtual IEnumerable<Tag> Tags { get { return _tags; } }
 
         /// <summary>
@@ -44,44 +44,18 @@ namespace BookClub.Catalog.Models
         /// <param name="genre">The genre.</param>
         public Book(Author author, Genre genre)
         {
-            _authors = new List<BookAuthor>()
+            _bookAuthors = new List<BookAuthor>()
             {
-                new BookAuthor(author, this, AuthorType.Author)
+                new BookAuthor(author, this)
             };
             _tags = new List<Tag>();
             _genre = genre;
             _genreId = genre.Id;
         }
 
-        public Author Author()
+        public IEnumerable<Author> GetAuthors()
         {
-            return FilterAuthorsBy(x => x.AuthorType == AuthorType.Author)
-                .Select(x => x.Author)
-                .First();
-        }
-
-        public IEnumerable<Author> CoAuthors()
-        {
-            return FilterAuthorsBy(x => x.AuthorType == AuthorType.CoAuthor)
-                .OrderBy(x => x.Author.NormalizedName)
-                .Select(x => x.Author);
-        }
-
-        public void ChangeAuthor
-        (
-            IAuthorStrategy authorStrategy,
-            Author newAuthor
-        )
-        {
-            if (authorStrategy.CanChangeAuthor(_authors, newAuthor))
-            {
-                var currentAuthor = FilterAuthorsBy(x => x.AuthorType == AuthorType.Author)
-                    .First();
-
-                _authors.Remove(currentAuthor);
-
-                _authors.Add(new BookAuthor(newAuthor, this, AuthorType.Author));
-            }
+            return _bookAuthors.Select(x => x.Author);
         }
 
         public void ChangeGenre
@@ -115,9 +89,9 @@ namespace BookClub.Catalog.Models
             Author newCoAuthor
         )
         {
-            if (coAuthorStrategy.CanAddCoAuthor(_authors, newCoAuthor))
+            if (coAuthorStrategy.CanAddCoAuthor(_bookAuthors, newCoAuthor))
             {
-                _authors.Add(new BookAuthor(newCoAuthor, this, AuthorType.CoAuthor));
+                _bookAuthors.Add(new BookAuthor(newCoAuthor, this));
             }
         }
 
@@ -127,12 +101,12 @@ namespace BookClub.Catalog.Models
             int id
         )
         {
-            if (coAuthorStrategy.CanRemoveCoAuthor(_authors, id))
+            if (coAuthorStrategy.CanRemoveCoAuthor(_bookAuthors, id))
             {
                 var coAuthor = FilterAuthorsBy(x => x.AuthorId == id)
                     .First();
 
-                _authors.Remove(coAuthor);
+                _bookAuthors.Remove(coAuthor);
             }
         }
 
@@ -173,7 +147,7 @@ namespace BookClub.Catalog.Models
 
         private IEnumerable<BookAuthor> FilterAuthorsBy(Func<BookAuthor, bool> predicate)
         {
-            return _authors.Where(predicate);
+            return _bookAuthors.Where(predicate);
         }
 
         private IEnumerable<Tag> FilterTagsBy(Func<Tag, bool> predicate)
