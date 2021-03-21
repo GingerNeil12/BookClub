@@ -8,10 +8,12 @@ namespace BookClub.Catalog.Models
     public class Book : AuditableEntity
     {
         private Genre _genre;
+        private Publisher _publisher;
         private ICollection<BookAuthor> _bookAuthors;
         private ICollection<Tag> _tags;
 
         private int _genreId;
+        private int _publisherId;
 
         public int Id { get; set; }
         public string Title { get; set; }
@@ -21,11 +23,13 @@ namespace BookClub.Catalog.Models
         public bool NonFiction { get; set; }
         public bool HardBack { get; set; }
         public int GenreId { get { return _genreId; } }
+        public int PublisherId { get { return _publisherId; } }
         public int? Edition { get; set; }
         public int? PageCount { get; set; }
         public DateTime? PublishedOn { get; set; }
 
         public virtual Genre Genre { get { return _genre; } }
+        public virtual Publisher Publisher { get { return _publisher; } }
         public virtual IEnumerable<BookAuthor> BookAuthors { get { return _bookAuthors; } }
         public virtual IEnumerable<Tag> Tags { get { return _tags; } }
 
@@ -42,15 +46,25 @@ namespace BookClub.Catalog.Models
         /// </summary>
         /// <param name="author">The main author.</param>
         /// <param name="genre">The genre.</param>
-        public Book(Author author, Genre genre)
+        /// <param name="publisher">The publisher.</param>
+        public Book
+        (
+            Author author,
+            Genre genre,
+            Publisher publisher
+        )
         {
             _bookAuthors = new List<BookAuthor>()
             {
                 new BookAuthor(author, this)
             };
             _tags = new List<Tag>();
+
             _genre = genre;
             _genreId = genre.Id;
+
+            _publisher = publisher;
+            _publisherId = publisher.Id;
         }
 
         public IEnumerable<Author> GetAuthors()
@@ -68,53 +82,6 @@ namespace BookClub.Catalog.Models
             {
                 _genre = newGenre;
                 _genreId = newGenre.Id;
-            }
-        }
-
-        public void AddCoAuthors
-        (
-            ICoAuthorStrategy coAuthorStrategy,
-            IEnumerable<Author> coAuthors
-        )
-        {
-            foreach (var coAuthor in coAuthors)
-            {
-                AddCoAuthor(coAuthorStrategy, coAuthor);
-            }
-        }
-
-        public void AddCoAuthor
-        (
-            ICoAuthorStrategy coAuthorStrategy,
-            Author newCoAuthor
-        )
-        {
-            if (coAuthorStrategy.CanAddCoAuthor(_bookAuthors, newCoAuthor))
-            {
-                _bookAuthors.Add(new BookAuthor(newCoAuthor, this));
-            }
-        }
-
-        public void RemoveCoAuthor
-        (
-            ICoAuthorStrategy coAuthorStrategy,
-            int id
-        )
-        {
-            if (coAuthorStrategy.CanRemoveCoAuthor(_bookAuthors, id))
-            {
-                var coAuthor = FilterAuthorsBy(x => x.AuthorId == id)
-                    .First();
-
-                _bookAuthors.Remove(coAuthor);
-            }
-        }
-
-        public void AddTags(ITagStrategy tagStrategy, IEnumerable<Tag> tags)
-        {
-            foreach (var tag in tags)
-            {
-                AddTag(tagStrategy, tag);
             }
         }
 
