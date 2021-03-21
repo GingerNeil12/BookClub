@@ -4,7 +4,7 @@ namespace BookClub.Catalog.Models
 {
     public class Genre
     {
-        private List<Book> _books;
+        private ICollection<Book> _books;
 
         public int Id { get; set; }
         public string Name { get; set; }

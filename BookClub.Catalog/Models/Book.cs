@@ -8,8 +8,8 @@ namespace BookClub.Catalog.Models
     public class Book : AuditableEntity
     {
         private Genre _genre;
-        private List<BookAuthor> _bookAuthors;
-        private List<Tag> _tags;
+        private ICollection<BookAuthor> _bookAuthors;
+        private ICollection<Tag> _tags;
 
         private int _genreId;
 

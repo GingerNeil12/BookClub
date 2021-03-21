@@ -6,7 +6,7 @@ namespace BookClub.Catalog.Models
 {
     public class Author : AuditableEntity
     {
-        private List<BookAuthor> _bookAuthors;
+        private ICollection<BookAuthor> _bookAuthors;
 
         public int Id { get; set; }
         public string Name { get; set; }
