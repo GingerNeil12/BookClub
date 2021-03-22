@@ -11,6 +11,7 @@ namespace BookClub.Catalog.DataAccess
         DbSet<BookAuthor> BookAuthors { get; set; }
         DbSet<Book> Books { get; set; }
         DbSet<Genre> Genres { get; set; }
+        DbSet<Publisher> Publishers { get; set; }
         DbSet<Tag> Tags { get; set; }
 
         Task<int> SaveChangesAsync(CancellationToken cancellationToken);
