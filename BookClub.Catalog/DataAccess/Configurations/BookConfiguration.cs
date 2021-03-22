@@ -63,10 +63,6 @@ namespace BookClub.Catalog.DataAccess.Configurations
             builder.Property(x => x.RowVersion)
                 .IsRowVersion();
 
-            builder.Navigation(x => x.BookAuthors)
-                .HasField("_bookAuthors")
-                .UsePropertyAccessMode(PropertyAccessMode.FieldDuringConstruction);
-
             builder.Navigation(x => x.Tags)
                 .HasField("_tags")
                 .UsePropertyAccessMode(PropertyAccessMode.FieldDuringConstruction);
@@ -81,10 +77,8 @@ namespace BookClub.Catalog.DataAccess.Configurations
                 .HasForeignKey(x => x.PublisherId)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            builder.HasMany(x => x.BookAuthors)
-                .WithOne(x => x.Book)
-                .HasForeignKey(x => x.BookId)
-                .OnDelete(DeleteBehavior.Cascade);
+            builder.HasMany(x => x.Authors)
+                .WithMany(x => x.Books);
 
             builder.HasMany(x => x.Tags)
                 .WithMany(x => x.Books);

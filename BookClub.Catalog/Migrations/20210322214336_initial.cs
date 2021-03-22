@@ -119,26 +119,26 @@ namespace BookClub.Catalog.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "BookAuthor",
+                name: "AuthorBook",
                 schema: "Catalog",
                 columns: table => new
                 {
-                    AuthorId = table.Column<int>(type: "int", nullable: false),
-                    BookId = table.Column<int>(type: "int", nullable: false)
+                    AuthorsId = table.Column<int>(type: "int", nullable: false),
+                    BooksId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_BookAuthor", x => new { x.AuthorId, x.BookId });
+                    table.PrimaryKey("PK_AuthorBook", x => new { x.AuthorsId, x.BooksId });
                     table.ForeignKey(
-                        name: "FK_BookAuthor_Author_AuthorId",
-                        column: x => x.AuthorId,
+                        name: "FK_AuthorBook_Author_AuthorsId",
+                        column: x => x.AuthorsId,
                         principalSchema: "Catalog",
                         principalTable: "Author",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_BookAuthor_Book_BookId",
-                        column: x => x.BookId,
+                        name: "FK_AuthorBook_Book_BooksId",
+                        column: x => x.BooksId,
                         principalSchema: "Catalog",
                         principalTable: "Book",
                         principalColumn: "Id",
@@ -173,6 +173,12 @@ namespace BookClub.Catalog.Migrations
                 });
 
             migrationBuilder.CreateIndex(
+                name: "IX_AuthorBook_BooksId",
+                schema: "Catalog",
+                table: "AuthorBook",
+                column: "BooksId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Book_GenreId",
                 schema: "Catalog",
                 table: "Book",
@@ -183,12 +189,6 @@ namespace BookClub.Catalog.Migrations
                 schema: "Catalog",
                 table: "Book",
                 column: "PublisherId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_BookAuthor_BookId",
-                schema: "Catalog",
-                table: "BookAuthor",
-                column: "BookId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_BookTag_TagsId",
@@ -214,7 +214,7 @@ namespace BookClub.Catalog.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "BookAuthor",
+                name: "AuthorBook",
                 schema: "Catalog");
 
             migrationBuilder.DropTable(

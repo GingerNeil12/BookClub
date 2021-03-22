@@ -19,6 +19,21 @@ namespace BookClub.Catalog.Migrations
                 .HasAnnotation("ProductVersion", "5.0.4")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+            modelBuilder.Entity("AuthorBook", b =>
+                {
+                    b.Property<int>("AuthorsId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("BooksId")
+                        .HasColumnType("int");
+
+                    b.HasKey("AuthorsId", "BooksId");
+
+                    b.HasIndex("BooksId");
+
+                    b.ToTable("AuthorBook");
+                });
+
             modelBuilder.Entity("BookClub.Catalog.Models.Author", b =>
                 {
                     b.Property<int>("Id")
@@ -121,21 +136,6 @@ namespace BookClub.Catalog.Migrations
                     b.ToTable("Book", "Catalog");
                 });
 
-            modelBuilder.Entity("BookClub.Catalog.Models.BookAuthor", b =>
-                {
-                    b.Property<int>("AuthorId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("BookId")
-                        .HasColumnType("int");
-
-                    b.HasKey("AuthorId", "BookId");
-
-                    b.HasIndex("BookId");
-
-                    b.ToTable("BookAuthor", "Catalog");
-                });
-
             modelBuilder.Entity("BookClub.Catalog.Models.Genre", b =>
                 {
                     b.Property<int>("Id")
@@ -226,6 +226,21 @@ namespace BookClub.Catalog.Migrations
                     b.ToTable("BookTag");
                 });
 
+            modelBuilder.Entity("AuthorBook", b =>
+                {
+                    b.HasOne("BookClub.Catalog.Models.Author", null)
+                        .WithMany()
+                        .HasForeignKey("AuthorsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("BookClub.Catalog.Models.Book", null)
+                        .WithMany()
+                        .HasForeignKey("BooksId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("BookClub.Catalog.Models.Book", b =>
                 {
                     b.HasOne("BookClub.Catalog.Models.Genre", "Genre")
@@ -245,25 +260,6 @@ namespace BookClub.Catalog.Migrations
                     b.Navigation("Publisher");
                 });
 
-            modelBuilder.Entity("BookClub.Catalog.Models.BookAuthor", b =>
-                {
-                    b.HasOne("BookClub.Catalog.Models.Author", "Author")
-                        .WithMany("BookAuthors")
-                        .HasForeignKey("AuthorId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("BookClub.Catalog.Models.Book", "Book")
-                        .WithMany("BookAuthors")
-                        .HasForeignKey("BookId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Author");
-
-                    b.Navigation("Book");
-                });
-
             modelBuilder.Entity("BookTag", b =>
                 {
                     b.HasOne("BookClub.Catalog.Models.Book", null)
@@ -277,16 +273,6 @@ namespace BookClub.Catalog.Migrations
                         .HasForeignKey("TagsId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-                });
-
-            modelBuilder.Entity("BookClub.Catalog.Models.Author", b =>
-                {
-                    b.Navigation("BookAuthors");
-                });
-
-            modelBuilder.Entity("BookClub.Catalog.Models.Book", b =>
-                {
-                    b.Navigation("BookAuthors");
                 });
 
             modelBuilder.Entity("BookClub.Catalog.Models.Genre", b =>

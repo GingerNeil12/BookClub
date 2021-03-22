@@ -9,7 +9,7 @@ namespace BookClub.Catalog.Models
     {
         private Genre _genre;
         private Publisher _publisher;
-        private ICollection<BookAuthor> _bookAuthors;
+        private ICollection<Author> _authors;
         private ICollection<Tag> _tags;
 
         private int _genreId;
@@ -30,7 +30,7 @@ namespace BookClub.Catalog.Models
 
         public virtual Genre Genre { get { return _genre; } }
         public virtual Publisher Publisher { get { return _publisher; } }
-        public virtual IEnumerable<BookAuthor> BookAuthors { get { return _bookAuthors; } }
+        public virtual IEnumerable<Author> Authors { get { return _authors; } }
         public virtual IEnumerable<Tag> Tags { get { return _tags; } }
 
         /// <summary>
@@ -54,10 +54,8 @@ namespace BookClub.Catalog.Models
             Publisher publisher
         )
         {
-            _bookAuthors = new List<BookAuthor>()
-            {
-                new BookAuthor(author, this)
-            };
+            _authors = new List<Author>();
+
             _tags = new List<Tag>();
 
             _genre = genre;
@@ -65,11 +63,6 @@ namespace BookClub.Catalog.Models
 
             _publisher = publisher;
             _publisherId = publisher.Id;
-        }
-
-        public IEnumerable<Author> GetAuthors()
-        {
-            return _bookAuthors.Select(x => x.Author);
         }
 
         public void ChangeGenre
@@ -98,29 +91,6 @@ namespace BookClub.Catalog.Models
             }
         }
 
-        public void AddAuthor
-        (
-            IBookAuthorStrategy bookAuthorStrategy,
-            Author newAuthor
-        )
-        {
-            if (bookAuthorStrategy.CanAddAuthor(_bookAuthors, newAuthor))
-            {
-                _bookAuthors.Add(new BookAuthor(newAuthor, this));
-            }
-        }
-
-        public void RemoveAuthor(IBookAuthorStrategy bookAuthorStrategy, int id)
-        {
-            if (bookAuthorStrategy.CanRemoveAuthor(_bookAuthors, id))
-            {
-                var author = FilterAuthorsBy(x => x.AuthorId == id)
-                    .First();
-
-                _bookAuthors.Remove(author);
-            }
-        }
-
         public void AddTag
         (
             ITagStrategy tagStrategy,
@@ -146,11 +116,6 @@ namespace BookClub.Catalog.Models
 
                 _tags.Remove(tag);
             }
-        }
-
-        private IEnumerable<BookAuthor> FilterAuthorsBy(Func<BookAuthor, bool> predicate)
-        {
-            return _bookAuthors.Where(predicate);
         }
 
         private IEnumerable<Tag> FilterTagsBy(Func<Tag, bool> predicate)

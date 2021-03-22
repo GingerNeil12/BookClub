@@ -8,7 +8,6 @@ namespace BookClub.Catalog.DataAccess
     interface ICatalogDbContext
     {
         DbSet<Author> Authors { get; set; }
-        DbSet<BookAuthor> BookAuthors { get; set; }
         DbSet<Book> Books { get; set; }
         DbSet<Genre> Genres { get; set; }
         DbSet<Publisher> Publishers { get; set; }

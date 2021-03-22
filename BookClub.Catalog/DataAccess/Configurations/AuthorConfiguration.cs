@@ -33,14 +33,8 @@ namespace BookClub.Catalog.DataAccess.Configurations
             builder.Property(x => x.RowVersion)
                 .IsRowVersion();
 
-            builder.Navigation(x => x.BookAuthors)
-                .UsePropertyAccessMode(PropertyAccessMode.FieldDuringConstruction)
-                .HasField("_bookAuthors");
-
-            builder.HasMany(x => x.BookAuthors)
-                .WithOne(x => x.Author)
-                .HasForeignKey(x => x.AuthorId)
-                .OnDelete(DeleteBehavior.Cascade);
+            builder.HasMany(x => x.Books)
+                .WithMany(x => x.Authors);
         }
     }
 }
