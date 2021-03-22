@@ -19,8 +19,4 @@
     <ProjectReference Include="..\BookClub.EventBus\BookClub.EventBus.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="DataAccess\Configurations\" />
-  </ItemGroup>
-
 </Project>
