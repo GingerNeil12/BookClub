@@ -1,4 +1,7 @@
-﻿using System.Reflection;
+﻿using System;
+using System.Reflection;
+using System.Threading;
+using System.Threading.Tasks;
 using BookClub.Catalog.Models;
 using Microsoft.EntityFrameworkCore;
 
@@ -16,6 +19,26 @@ namespace BookClub.Catalog.DataAccess
             : base(options)
         {
 
+        }
+
+        public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
+        {
+            foreach (var entry in ChangeTracker.Entries<AuditableEntity>())
+            {
+                switch (entry.State)
+                {
+                    case EntityState.Added:
+                        entry.Entity.CreatedBy = "CREATEDBY";
+                        entry.Entity.CreatedOn = DateTime.Now;
+                        break;
+                    case EntityState.Modified:
+                        entry.Entity.UpdatedBy = "UPDATEDBY";
+                        entry.Entity.UpdatedOn = DateTime.Now;
+                        break;
+                }
+            }
+
+            return base.SaveChangesAsync(cancellationToken);
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
